@@ -19,13 +19,7 @@
         0
       ],
       "id": "234f36db-f536-4d94-bb3a-a88475d0e440",
-      "name": "Gmail Trigger",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "WDGElHnlVD7TK2qP",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Gmail Trigger"
     },
     {
       "parameters": {
@@ -91,18 +85,12 @@
         0
       ],
       "id": "b2b2d3ee-fbd6-4819-afdc-957331794747",
-      "name": "Message a model",
-      "credentials": {
-        "openAiApi": {
-          "id": "NB4Qc5pThtLfPdoc",
-          "name": "n8n free OpenAI API credits"
-        }
-      }
+      "name": "Message a model"
     },
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const raw = $json.output[0].content[0].text;\n\nconst parsed = JSON.parse(raw);\n\nreturn {\n  json: parsed\n};"
+        "jsCode": "const raw = $json.output?.[0]?.content?.[0]?.text;\nlet parsed;\ntry { parsed = JSON.parse(String(raw || '').replace(/^```(?:json)?\\s*|\\s*```$/g, '')); }\ncatch { throw new Error('Model output is not valid JSON; no alert will be sent.'); }\nif (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Expected an object');\nreturn { json: parsed };"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -149,8 +137,8 @@
     },
     {
       "parameters": {
-        "sendTo": "aswinaswin6552@gmail.com",
-        "subject": "🚨 Critical Email Detected",
+        "sendTo": "REPLACE_WITH_APPROVED_RECIPIENT",
+        "subject": "\ud83d\udea8 Critical Email Detected",
         "emailType": "text",
         "message": "=Summary:\n{{$json.summary}}\n\nReason:\n{{$json.reason}}\n\nRisk Level:\n{{$json.risk_alert.risk_level}}\n\nRisk Explanation:\n{{$json.risk_alert.risk_reason}}",
         "options": {}
@@ -162,14 +150,7 @@
         -96
       ],
       "id": "556d44a1-d906-4c63-9202-8de65acf490f",
-      "name": "Send a message",
-      "webhookId": "5ba20a99-9e98-4557-ac78-415e76277edd",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "WDGElHnlVD7TK2qP",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Send a message"
     }
   ],
   "pinData": {},
@@ -236,11 +217,5 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "bb3aa11d-97ef-498f-88e9-96a3583ca3e5",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "ac341de37aed15ecf2f366a785354ee65e49ac335af4030f4de500688f653b8e"
-  },
-  "id": "TaTY03kZKDhvwnuc",
   "tags": []
 }
